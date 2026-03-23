@@ -1,0 +1,5 @@
+django
+django-ninja
+django-cors-headers
+djangorestframework-simplejwt
+uvicorn
