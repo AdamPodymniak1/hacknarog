@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "declaration": false,
-    "lib": ["ESNext", "DOM"]
-  }
+    "target": "ES2019",
+    "module": "CommonJS",
+    "declaration": false
+  },
 }
