@@ -1,18 +1,24 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
-import { authApi } from './api'; 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useTokenObtainPair, useBackendApiSignup } from './api/generated';
+
+const queryClient = new QueryClient();
 
 function LoginPage() {
   const [form, setForm] = useState({ username: '', password: '' });
   const navigate = useNavigate();
+  const { mutateAsync: login } = useTokenObtainPair();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await authApi.tokenObtainPair(form);
-      localStorage.setItem('access_token', data.access);
+      const response = await login({ data: form });
+      localStorage.setItem('access_token', response.access);
       navigate('/');
-    } catch (err) { alert("Login Failed"); }
+    } catch (err) {
+      alert("Login Failed");
+    }
   };
 
   return (
@@ -46,14 +52,17 @@ function LoginPage() {
 function RegisterPage() {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const navigate = useNavigate();
+  const { mutateAsync: signup } = useBackendApiSignup();
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await authApi.backendApiSignup(form);
+      await signup({ data: form });
       alert("Account created! Please login.");
       navigate('/login');
-    } catch (err) { alert("Signup Failed"); }
+    } catch (err) {
+      alert("Signup Failed");
+    }
   };
 
   return (
@@ -97,12 +106,14 @@ function Dashboard() {
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      </Routes>
-    </BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        </Routes>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
