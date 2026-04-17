@@ -1,7 +1,0 @@
-django
-django-ninja
-django-cors-headers
-djangorestframework-simplejwt
-uvicorn
-django-ninja-extra
-django-ninja-jwt
